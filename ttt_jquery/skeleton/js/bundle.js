@@ -94,21 +94,27 @@ class View {
   bindEvents() {
     const $sq = $("ul");
     $sq.on("click", e => {
-      console.log(e);
-      const $target = $(e.target);
+      let $target = $(e.target);
       console.log($target);
-      console.log($sq);
-      if ($target.context === "ul") {
+      if ($target.is("ul")) {
         alert("Invalid move!");
       }
       // alert($currentTarget.data("pos"));
+      let mark = this.game.currentPlayer;
       this.makeMove($target);
+
+      if(this.game.winner() === mark){
+        alert(`Game over. ${mark.toUpperCase()} won!`);
+        $sq.off("click");
+        const $li = $("li");
+        $li.css("background-color", "white");
+      }
     });
   }
 
   makeMove($square) {
     let mark = this.game.currentPlayer;
-    $square.text(mark);
+    $square.text(mark.toUpperCase());
 
     let pos = $square.data("pos");
     this.game.playMove(pos);
@@ -117,9 +123,6 @@ class View {
       $square.css("color", "green" );
     } else {
       $square.css("color", "blue" );
-    }
-    if(this.game.board.winner){
-      alert(`${mark} won!`);
     }
   }
 
